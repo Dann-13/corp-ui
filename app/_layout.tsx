@@ -6,7 +6,7 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export const unstable_settings = {
-  anchor: '(tabs)',
+  initialRouteName: 'index',
 };
 
 export default function RootLayout() {
@@ -14,25 +14,15 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="login" />
+        <Stack.Screen name="register" />
+        <Stack.Screen name="forgot-password" />
         <Stack.Screen 
           name="modal" 
-          options={{ presentation: 'modal', title: 'Modal' }} 
-        />
-        <Stack.Screen 
-          name="register" 
-          options={{ 
-            title: 'Registro',
-            headerBackTitle: 'Volver',
-          }} 
-        />
-        <Stack.Screen 
-          name="login" 
-          options={{ 
-            title: 'Iniciar Sesión',
-            headerBackTitle: 'Volver',
-          }} 
+          options={{ presentation: 'modal', headerShown: true, title: 'Modal' }} 
         />
       </Stack>
       <StatusBar style="auto" />

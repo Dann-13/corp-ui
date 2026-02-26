@@ -1,6 +1,3 @@
-/**
- * Ruta de Login
- */
 
 import { LoginScreen } from '@/src/features/auth/screens/LoginScreen';
 
