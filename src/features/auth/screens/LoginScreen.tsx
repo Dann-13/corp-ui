@@ -94,7 +94,7 @@ export function LoginScreen() {
 
           {/* Sign up link */}
           <View style={styles.signupRow}>
-            <Text style={styles.signupText}>Don't have an account? </Text>
+            <Text style={styles.signupText}> Don&apos;t have an account? </Text>
             <TouchableOpacity
               onPress={() => router.push('/register')}
               activeOpacity={0.7}
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   header: {
-    paddingTop: 60,
+    paddingTop: 100,
     paddingBottom: 40,
     paddingHorizontal: 24,
     borderBottomLeftRadius: 32,

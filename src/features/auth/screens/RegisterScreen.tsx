@@ -79,6 +79,16 @@ export function RegisterScreen() {
           />
 
           <Input
+            label="ADDRESS"
+            placeholder="123 Main St, New York, NY 10001"
+            value={values.address}
+            onChangeText={(text) => handleChange('address', text)}
+            error={errors.address}
+            autoCapitalize="words"
+            multiline
+          />
+
+          <Input
             label="PASSWORD"
             placeholder="• • • • • • • • • •"
             value={values.password}
@@ -119,7 +129,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   header: {
-    paddingTop: 60,
+    paddingTop: 150,
     paddingBottom: 40,
     paddingHorizontal: 24,
     borderBottomLeftRadius: 32,

@@ -55,6 +55,13 @@ export function validateRegisterForm(data: RegisterFormData): Record<string, str
     errors.email = ValidationMessages.email;
   }
 
+  // Validar dirección (address)
+  if (!data.address || !data.address.trim()) {
+    errors.address = ValidationMessages.required;
+  } else if (data.address.trim().length < 10) {
+    errors.address = ValidationMessages.minLength(10);
+  }
+
   // Validar contraseña
   if (!data.password) {
     errors.password = ValidationMessages.required;
