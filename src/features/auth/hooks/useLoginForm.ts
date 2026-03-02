@@ -1,10 +1,10 @@
 import { useState } from 'react';
-
-interface LoginFormData {
-  email: string;
-  password: string;
-  rememberMe: boolean;
-}
+import { Alert } from 'react-native';
+import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import type { LoginFormData } from '@/src/types/auth.types';
+import { loginCompany } from '@/src/api/services/auth.service';
+import type { ApiError } from '@/src/types/api-response';
 
 interface ValidationErrors {
   email?: string;
@@ -12,6 +12,8 @@ interface ValidationErrors {
 }
 
 export function useLoginForm() {
+  const router = useRouter();
+
   const [values, setValues] = useState<LoginFormData>({
     email: '',
     password: '',
@@ -57,20 +59,57 @@ export function useLoginForm() {
     setLoading(true);
 
     try {
-      // TODO: Conectar con el backend
-      // await authService.login(values.email, values.password);
-      
-      // Simulación de login
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      console.log('Login successful:', values);
-      
-      // Aquí redirigirías al usuario
-      // router.replace('/(tabs)');
-      
-    } catch (error) {
-      console.error('Login error:', error);
-      setErrors({ email: 'Invalid credentials' });
+      console.log('[useLoginForm] Attempting login...');
+
+      // Llamar al servicio de login
+      const response = await loginCompany({
+        email: values.email.trim().toLowerCase(),
+        password: values.password,
+      });
+
+      console.log('[useLoginForm] Login successful:', response.company);
+
+      // Guardar tokens en AsyncStorage
+      await AsyncStorage.setItem('access_token', response.accessToken);
+      await AsyncStorage.setItem('refresh_token', response.refreshToken);
+      await AsyncStorage.setItem('company', JSON.stringify(response.company));
+
+      // Si "Remember me" está activado, guardar email
+      if (values.rememberMe) {
+        await AsyncStorage.setItem('saved_email', values.email);
+      } else {
+        await AsyncStorage.removeItem('saved_email');
+      }
+
+      // Mostrar mensaje de éxito
+      Alert.alert(
+        '✅ ¡Bienvenido!',
+        `Hola ${response.company.name}! Has iniciado sesión exitosamente.`,
+        [
+          {
+            text: 'Continuar',
+            onPress: () => {
+              router.replace('/dashboard');
+            },
+          },
+        ]
+      );
+    } catch (error: any) {
+      console.error('[useLoginForm] Login error:', error);
+
+      const apiError = error as ApiError;
+
+      // Mostrar mensaje de error
+      Alert.alert(
+        '❌ Error de Autenticación',
+        apiError.message || 'Email o contraseña incorrectos. Por favor intenta de nuevo.',
+        [{ text: 'Entendido' }]
+      );
+
+      // Mostrar error en el campo de email
+      setErrors({
+        email: apiError.message || 'Credenciales inválidas',
+      });
     } finally {
       setLoading(false);
     }

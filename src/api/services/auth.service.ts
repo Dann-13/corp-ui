@@ -3,6 +3,7 @@
  * Maneja todas las operaciones relacionadas con auth/companies
  */
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { apiClient } from '../config/api-client';
 import { API_ENDPOINTS } from '../config/endpoints';
 import type { ApiSuccessResponse } from '@/src/types/api-response';
@@ -60,12 +61,13 @@ export async function loginCompany(
 }
 
 /**
- * Logout (para futuro)
+ * Logout
+ * Limpia tokens del almacenamiento local
  */
 export async function logoutCompany(): Promise<void> {
   try {
-    // TODO: Limpiar token de AsyncStorage
-    // await AsyncStorage.removeItem('auth_token');
+    // Limpiar tokens de AsyncStorage
+    await AsyncStorage.multiRemove(['access_token', 'refresh_token', 'company', 'saved_email']);
     
     console.log('[AuthService] Logout successful');
   } catch (error: any) {

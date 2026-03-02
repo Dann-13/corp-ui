@@ -5,6 +5,7 @@
 
 import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import Constants from 'expo-constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // URL base del backend - configurable por ambiente
 const API_BASE_URL = Constants.expoConfig?.extra?.apiUrl || 'http://localhost:3000';
@@ -25,11 +26,15 @@ export const apiClient: AxiosInstance = axios.create({
  */
 apiClient.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
-    // TODO: Agregar token de AsyncStorage cuando implementemos login
-    // const token = await AsyncStorage.getItem('auth_token');
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
+    // Agregar token de AsyncStorage si existe
+    try {
+      const token = await AsyncStorage.getItem('access_token');
+      if (token && config.headers) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch (error) {
+      console.error('[API] Error reading token from storage:', error);
+    }
     
     console.log(`[API] ${config.method?.toUpperCase()} ${config.url}`);
     return config;
@@ -59,7 +64,7 @@ apiClient.interceptors.response.use(
       switch (status) {
         case 400:
           return Promise.reject({
-            message: data.message || 'Datos inválidos',
+            message: data.message || 'Solicitud inválida',
             errors: data.errors || [],
           });
         case 401:

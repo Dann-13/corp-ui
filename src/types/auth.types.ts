@@ -59,7 +59,9 @@ export interface CompanyLoginRequest {
  */
 export interface CompanyLoginResponse {
   company: CompanyResponse;
-  token: string;
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
 }
 
 export interface User {
