@@ -24,6 +24,7 @@ export interface CompanyResponse {
   email: string;
   address: string;
   isActive: boolean;
+  roles: string[];
   createdAt: Date | string;
   updatedAt: Date | string;
 }

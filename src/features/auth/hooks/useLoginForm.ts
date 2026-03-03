@@ -81,6 +81,13 @@ export function useLoginForm() {
         await AsyncStorage.removeItem('saved_email');
       }
 
+      // Determinar dashboard según el rol del usuario
+      const isAdmin = response.company.roles.includes('admin');
+      const dashboardRoute = isAdmin ? '/dashboard-admin' : '/dashboard-company';
+
+      console.log('[useLoginForm] User roles:', response.company.roles);
+      console.log('[useLoginForm] Redirecting to:', dashboardRoute);
+
       // Mostrar mensaje de éxito
       Alert.alert(
         '✅ ¡Bienvenido!',
@@ -89,7 +96,7 @@ export function useLoginForm() {
           {
             text: 'Continuar',
             onPress: () => {
-              router.replace('/dashboard');
+              router.replace(dashboardRoute);
             },
           },
         ]
